@@ -24,11 +24,11 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     posts: [{
-        type: mongoose.Schema.type.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Post"
     }],
     comments: [{
-        type: mongoose.Schema.type.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
     }],
 

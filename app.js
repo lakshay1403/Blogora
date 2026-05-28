@@ -1,10 +1,13 @@
 const express = require('express')
 const app = express();
 const mongoose = require('mongoose');
+const User = require('./models/User');
 require('dotenv').config();
 
 //port
 const PORT = process.env.PORT || 3000
+//middlewares: passing form data
+app.use(express.urlencoded({extended: true}));
 
 //EJS
 app.set("view engine", "ejs");
@@ -13,9 +16,38 @@ app.set("view engine", "ejs");
 app.get("/auth/login",(req,res) =>{
     res.render("login");
 });
+
 //Render Register page
 app.get("/auth/register", (req,res)=>{
     res.render("register");
+});
+
+//Main logic for user registration
+app.post("/auth/register",async (req,res) => {
+    const {username, email, password} = req.body;
+    try{
+        //check is user exists
+        const user = await User.findOne({email});
+
+        if(user){
+            res.send("user already exists");
+        }
+        else{
+            //create new user
+            const newUser = new User({
+                username,
+                email,
+                password,
+            });
+            //save user
+            await newUser.save();
+            //redirect to login page
+            res.redirect("/auth/login");
+        }
+        res.send("registering user");
+    }catch(error){
+        res.send(error);
+    }
 })
 
 //start the server
