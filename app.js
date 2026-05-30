@@ -13,9 +13,29 @@ app.use(express.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
 //routes
+//Render login page
 app.get("/auth/login",(req,res) =>{
     res.render("login");
 });
+
+//Main logic for user login
+app.post("/auth/login", async (req,res) => {
+    const {email, password} = req.body;
+    try {
+        //find user
+        const user = await User.findOne({ email });
+        const isMatch = await User.findOne({password});
+
+        if(user && isMatch){
+            res.send("login success");
+        }
+        else{
+            res.send("login failed");
+        }
+    } catch (error) {
+        res.send(error);
+    }
+})
 
 //Render Register page
 app.get("/auth/register", (req,res)=>{
