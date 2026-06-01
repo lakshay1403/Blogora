@@ -1,5 +1,5 @@
 const express = require("express");
-const { getLogin, Login, getRegister, register } = require("../controllers/authController");
+const { getLogin, Login, getRegister, register, logout } = require("../controllers/authController");
 const userRoute = express.Router();
 
 
@@ -15,4 +15,6 @@ userRoute.get("/register",getRegister);
 //Main logic for user registration
 userRoute.post("/register",register);
 
+//logout
+userRoute.get('/logout', logout);
 module.exports = userRoute;

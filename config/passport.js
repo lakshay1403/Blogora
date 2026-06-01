@@ -1,6 +1,6 @@
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("../models/User");
-
+const bcrypt = require("bcryptjs");
 
 module.exports = function (passport) {
     //define the local strategy for email and password authentication
@@ -25,8 +25,8 @@ module.exports = function (passport) {
         }
     }));
     //serializeUser: Determine which data of the user object should be stored in the session. Here, we store the user ID.
-    passport.serializeUser(function (user, done){
-        done(null, user.id);
+    passport.serializeUser(function (User, done){
+        done(null, User.id);
     });
     //Deserialize the user object based on the user ID stored in the session
     passport.deserializeUser(async function (id, done) {

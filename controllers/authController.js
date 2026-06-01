@@ -4,7 +4,11 @@ const passport = require("passport");
 
 //Get login page
 exports.getLogin = (req,res) => {
-    res.render("login");
+    res.render("login",{
+        title: "Login",
+        error: "",
+        user: req.user || null,
+    });
 };
 
 //Login Logic
@@ -14,14 +18,14 @@ exports.Login = async (req,res,  next) => {
             if(err){
                 return next(err);
             }
-            if(!User){
+            if(!user){
                 return res.render("login", {
                     title: "Login",
-                    user: req.username,
+                    user: req.user || null,
                     error: info.message,
                 });
             }
-            req.Login(user, (err) =>{
+            req.login(user, (err) =>{
                 if(err) {
                     return next(err);
                 }
@@ -34,7 +38,7 @@ exports.Login = async (req,res,  next) => {
 exports.getRegister = (req,res)=>{
     res.render("register",{
         title: "Register",
-        user: req.username,
+        user: req.user,
         error: "",
     });
 };
@@ -49,7 +53,7 @@ exports.register = async (req,res) => {
         if(existingUser) {
             return res.render("register",{
                 title: "Register",
-                user: req.username,
+                user: req.user,
                 error: "User already exists",
             });
         }
@@ -62,12 +66,23 @@ exports.register = async (req,res) => {
             email,
             password: hashedPassword,
         });
+        
         res.redirect("/auth/login");
     }catch(error){
         res.render("register",{
         title: "Register",
-        user: req.username,
+        user: req.user,
         error: error.message,
         });
     }
 };
+
+//Logout logic 
+exports.logout = (req,res,next) => {
+    req.logout((err)=>{
+        if(err){
+            return next(err);
+        }
+        res.redirect('/auth/login');
+    });
+}
