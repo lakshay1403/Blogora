@@ -30,6 +30,14 @@ app.use(passport.session());
 //EJS
 app.set("view engine", "ejs");
 
+//Home Route
+app.get("/", (req,res) => {
+    res.render("home", {
+        user: req.user,
+        error:"",
+        title: "Home",
+    });
+})
 //routes
 app.use("/auth", userRoute);
 
