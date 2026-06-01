@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require('bcryptjs')
+const passport = require("passport");
 
 //Get login page
 exports.getLogin = (req,res) => {
@@ -7,22 +8,26 @@ exports.getLogin = (req,res) => {
 };
 
 //Login Logic
-exports.Login = async (req,res) => {
-    const {email, password} = req.body;
-    try {
-        //find user
-        const user = await User.findOne({ email });
-        const isMatch = await User.findOne({password});
-
-        if(user && isMatch){
-            res.send("login success");
-        }
-        else{
-            res.send("login failed");
-        }
-    } catch (error) {
-        res.send(error);
-    }
+exports.Login = async (req,res,  next) => {
+    passport.authenticate(
+        "local", (err, user, info)=>{
+            if(err){
+                return next(err);
+            }
+            if(!User){
+                return res.render("login", {
+                    title: "Login",
+                    user: req.username,
+                    error: info.message,
+                });
+            }
+            req.Login(user, (err) =>{
+                if(err) {
+                    return next(err);
+                }
+                return res.redirect("/");
+            });
+        })(req,res,next)
 };
 
 //Get Register page
@@ -30,7 +35,7 @@ exports.getRegister = (req,res)=>{
     res.render("register",{
         title: "Register",
         user: req.username,
-        error: null
+        error: "",
     });
 };
 
