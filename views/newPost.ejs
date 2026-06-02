@@ -15,7 +15,7 @@
       <% } %> <% if (success) { %>
       <div class="alert alert-success" role="alert"><%= success %></div>
       <% } %>
-      <form action="/posts/add" method="POST" enctype="multipart/form-data">
+      <form action="/posts/add" method="POST" enctype="multipart/form-data" onsubmit="return validationForm()">
         <div class="mb-3">
           <label for="title" class="form-label">Title</label>
           <input type="text" class="form-control" name="title" id="title" />
@@ -48,28 +48,29 @@
     </div>
   </div>
   <script>
-    function previewImages() {
-      const preview = document.getElementById("image-preview");
-      preview.innerHTML = "";
-      const files = document.getElementById("images").files;
-      for (let i = 0; i < files.length; i++) {
-        const img = document.createElement("img");
-        img.src = URL.createObjectURL(files[i]);
-        img.classList.add("img-thumbnail", "mr-2", "mb-2");
-        img.style.maxWidth = "150px";
-        preview.appendChild(img);
-      }
+    function previewImages(){
+        const preview = document.getElementById("image-preview");
+        preview.innerHTML = "";
+        const files = document.getElementById("images").files;
+        for(let i= 0; i< files.length; i++) {
+            const image = document.createElement("img");
+            image.src = URL.createObjectURL(files[i]);
+            image.classList.add("img-thumbnail","mr-2","mb-2");
+            image.style.maxWidth = "150px";
+
+            preview.appendChild(image);
+        }
     }
 
-    //form validation
+    //Form validation
     function validationForm() {
-      const title = document.getElementById("title").value;
-      const content = document.getElementById("content").value;
-      if (!title || !content) {
-        alert("Please fill in all fields");
-        return false;
-      }
-      return true;
+        const title = document.getElementById("title").value;
+        const content = document.getElementById("content").value;
+        if(!title || !content){
+            alert("Please fill out the fields");
+            return false;
+        }
+        return true;
     }
   </script>
   <%- include('partials/footer') %>

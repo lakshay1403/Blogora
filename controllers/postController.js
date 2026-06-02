@@ -48,6 +48,7 @@ exports.createPost = async (req,res) => {
     res.render("newPost",{
         title: "Create Post",
         user: req.user,
+        error: "",
         success: "Post created successfully",
     });
 };
