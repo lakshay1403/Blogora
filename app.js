@@ -10,6 +10,7 @@ const passportConfig = require('./config/passport');
 const passport = require('passport');
 const session = require("express-session");
 const postRoutes = require('./routes/postRoute');
+const errorHandler = require('./middlewares/errorHandler');
 //port
 const PORT = process.env.PORT || 3000
 //middlewares: passing form data
@@ -42,6 +43,9 @@ app.get("/", (req,res) => {
 //routes
 app.use("/auth", userRoute);
 app.use("/posts", postRoutes);
+
+//error handler
+app.use(errorHandler);
 
 //start the server
 mongoose.connect(process.env.MONGODB_URL).then(()=>{

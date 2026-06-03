@@ -1,18 +1,19 @@
 const Post = require("../models/Post");
 const File = require("../models/File");
+const asyncHandler = require("express-async-handler");
 
-exports.getPostForm = (req,res) => {
+exports.getPostForm = asyncHandler((req,res) => {
     res.render("newPost", {
         title: "Create Post",
         user: req.user,
         error: "",
         success: ""
     });
-};
+});
 
 //Creating a new post
 
-exports.createPost = async (req,res) => {
+exports.createPost = asyncHandler(async (req,res) =>{
     const {title, content} = req.body;
     //validation
     if(!req.files || req.files.length === 0){
@@ -20,6 +21,7 @@ exports.createPost = async (req,res) => {
             title: "Create Post",
             user: req.user,
             error: "At least one image is required",
+            success: "",
         });
     }
     const images = await Promise.all(req.files.map(async(file)=>{
@@ -51,4 +53,18 @@ exports.createPost = async (req,res) => {
         error: "",
         success: "Post created successfully",
     });
-};
+});
+
+//Get all posts
+exports.getPosts = asyncHandler(async (req,res) => {
+    const posts = await Post.find().populate("author","username");
+
+    console.log(JSON.stringify(posts[0], null, 2));
+    res.render("posts", {
+        title: "Posts",
+        posts,
+        user: req.user,
+        error : "",
+        success: "",
+    });
+});

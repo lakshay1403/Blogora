@@ -1,18 +1,19 @@
 const User = require("../models/User");
 const bcrypt = require('bcryptjs')
 const passport = require("passport");
+const asyncHandler = require("express-async-handler");
 
 //Get login page
-exports.getLogin = (req,res) => {
+exports.getLogin = asyncHandler((req,res) => {
     res.render("login",{
         title: "Login",
         error: "",
         user: req.user || null,
     });
-};
+});
 
 //Login Logic
-exports.Login = async (req,res,  next) => {
+exports.Login = asyncHandler(async (req, res, next) => {
     passport.authenticate(
         "local", (err, user, info)=>{
             if(err){
@@ -32,20 +33,20 @@ exports.Login = async (req,res,  next) => {
                 return res.redirect("/");
             });
         })(req,res,next)
-};
+});
 
 //Get Register page
-exports.getRegister = (req,res)=>{
+exports.getRegister = asyncHandler((req,res)=>{
     res.render("register",{
         title: "Register",
         user: req.user,
         error: "",
     });
-};
+});
 
 
 //logic for user Registration
-exports.register = async (req,res) => {
+exports.register = asyncHandler(async (req,res) => {
     const {username, email, password} = req.body;
     try{
         const existingUser = await User.findOne({ email });
@@ -75,14 +76,14 @@ exports.register = async (req,res) => {
         error: error.message,
         });
     }
-};
+});
 
 //Logout logic 
-exports.logout = (req,res,next) => {
+exports.logout = asyncHandler((req,res,next) => {
     req.logout((err)=>{
         if(err){
             return next(err);
         }
         res.redirect('/auth/login');
     });
-}
+});
