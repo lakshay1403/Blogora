@@ -1,5 +1,5 @@
 const express = require("express");
-const { getPostForm, createPost, getPosts } = require("../controllers/postController");
+const { getPostForm, createPost, getPosts, getPostById } = require("../controllers/postController");
 const upload = require("../config/multer");
 const {ensureAuthenticated} = require("../middlewares/auth");
 
@@ -19,5 +19,8 @@ postRoutes.post(
 
 //get all posts
 postRoutes.get("/", getPosts);
+
+//get posts bt id
+postRoutes.get("/:id", getPostById);
 
 module.exports = postRoutes;

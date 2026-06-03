@@ -1,0 +1,20 @@
+<%- include('partials/header', { title: 'Add Post', user: user }) %>
+
+<h1><%= post?.title  %></h1>
+<p><%= post?.content  %></p>
+<!-- images -->
+ <% post?.images?.forEach((image)=>{ %>
+    <div>
+        <img src="<%= image.url %>" alt="image">
+    </div>
+ <% }) %>
+
+     <!-- action button -->
+    <% if(user?._id?.toString() == post?.author._id?.toString()){ %>
+        <div>
+        <a href="/post/<%= post?._id %>/delete">Delete</a>
+        <a href="/post/<%= post?._id %>/edit">Edit</a>
+        </div>
+    <% } %>
+
+  <%- include('partials/footer') %>
