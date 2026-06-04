@@ -15,6 +15,13 @@
         <a href="/post/<%= post?._id %>/delete">Delete</a>
         <a href="/post/<%= post?._id %>/edit">Edit</a>
         </div>
+        <!-- comment form -->
+     <div>
+        <h2>Comments</h2>
+        <form action="/posts/<%=post?._id  %>/comments" method="post">
+            <textarea name="content" rows="5" placeholder="Add comment"></textarea>
+            <input type="submit" value="Comment">
+        </form>
+     </div>
     <% } %>
-
   <%- include('partials/footer') %>

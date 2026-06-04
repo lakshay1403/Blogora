@@ -2,18 +2,18 @@ const mongoose = require('mongoose');
 
 
 //schema
-const FileSchema = new mongoose.Schema({
+const CommentSchema = new mongoose.Schema({
     content:{
             type: String,
             required: true,
         },
     post:{
-            type: mongoose.Schema.type.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: "Post",
         },
     author: {
-        type: mongoose.Schema.type.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "User",
     },
