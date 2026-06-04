@@ -87,3 +87,25 @@ exports.getPostById = asyncHandler (async (req,res) => {
         error: "",
     });
 });
+
+
+//get edit post form
+exports.getEditPostForm = asyncHandler(async(req,res)=>{
+    const post = await Post.findById(req.params.id);
+    if(!post){
+        return res.render("postDetails",{
+            title: "Post",
+            post,
+            user: req.user,
+            error: "Post not found",
+            success: "",
+        });
+    }
+    res.render("editPost",{
+        title: "Edit Post",
+        post,
+        user: req.user,
+        error: "",
+        success: "",
+    });
+});

@@ -12,6 +12,7 @@ const session = require("express-session");
 const postRoutes = require('./routes/postRoute');
 const errorHandler = require('./middlewares/errorHandler');
 const commentRoute = require('./routes/CommentRoute');
+const methodOverride = require("method-override");
 //port
 const PORT = process.env.PORT || 3000
 //middlewares: passing form data
@@ -25,6 +26,8 @@ app.use(session({
     store: MongoStore.create({mongoUrl: process.env.MONGODB_URL}),
    })
 );
+//method override middleware
+app.use(methodOverride('_method'));
 //passport
 passportConfig(passport);
 app.use(passport.initialize());
