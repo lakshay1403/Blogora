@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./User');
 
 //schema
 const PostSchema = new mongoose.Schema({
@@ -14,6 +15,7 @@ const PostSchema = new mongoose.Schema({
     author: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
+            ref: "User",
     },
     images: [{
         url: {
