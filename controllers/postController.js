@@ -1,6 +1,7 @@
 const Post = require("../models/Post");
 const File = require("../models/File");
 const asyncHandler = require("express-async-handler");
+const cloudinary = require("../config/cloudinary");
 
 exports.getPostForm = asyncHandler((req,res) => {
     res.render("newPost", {
@@ -108,4 +109,56 @@ exports.getEditPostForm = asyncHandler(async(req,res)=>{
         error: "",
         success: "",
     });
+});
+
+
+//update post
+exports.updatePost = asyncHandler(async(req,res)=>{
+    const {title , content} = req.body;
+    //find the post
+    const post = await Post.findById(req.params.id);
+    if(!post){
+        return res.render("postDetails",{
+            title: "Post",
+            post,
+            user: req.user,
+            error: "Post not found",
+            success: "",
+        });
+    }
+    //validation to check the author who is editing the post
+    if(post.author.toString() !== req.user._id.toString()){
+        return res.render("postDetails",{
+            title: "Post",
+            post,
+            user: req.user,
+            error: "You are not authorized to edit this post",
+            success: "",
+        });
+    }
+    post.title = title || post.title;
+    post.content = content || post.content;
+    if(req.files){
+        await Promise.all(post.images.map(async(image) => {
+            await cloudinary.uploader.destroy(image.public_id);
+        })
+    );
+    }
+    post.images = await Promise.all(
+        req.files.map(async(image)=>{
+            const newFile = new File({
+                url: file.path,
+                public_id: file.filename,
+                uploaded_by: req.user._id,
+            });
+            await newFile.save();
+            return {
+                url: newFile.url,
+                public_id: newFile.public_id,
+            };
+        })
+    );
+
+    await post.save();
+    res.redirect(`/posts/${post._id}`);
 });
