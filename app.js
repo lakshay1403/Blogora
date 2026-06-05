@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const User = require('./models/User');
 const {MongoStore} = require("connect-mongo")
 console.log(typeof MongoStore.create);
-const userRoute = require("./routes/authRoutes");
+const authRoute = require("./routes/authRoutes");
 const passportConfig = require('./config/passport');
 const passport = require('passport');
 const session = require("express-session");
@@ -13,6 +13,7 @@ const postRoutes = require('./routes/postRoute');
 const errorHandler = require('./middlewares/errorHandler');
 const commentRoute = require('./routes/CommentRoute');
 const methodOverride = require("method-override");
+const userRoute = require('./routes/userRoute');
 //port
 const PORT = process.env.PORT || 3000
 //middlewares: passing form data
@@ -45,9 +46,10 @@ app.get("/", (req,res) => {
     });
 })
 //routes
-app.use("/auth", userRoute);
+app.use("/auth", authRoute);
 app.use("/posts", postRoutes);
 app.use("/", commentRoute);
+app.use("/User", userRoute);
 
 //error handler
 app.use(errorHandler);
