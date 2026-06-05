@@ -50,7 +50,7 @@ A full-stack blogging platform built with the **MERN Stack**, focusing heavily o
 ## ⚙️ Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/lakshay1403/Blogora.git
 cd blogora
 npm install
 npm start
