@@ -4,6 +4,7 @@ const Post = require("../models/Post");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const Cloudinary = require("cloudinary").v2;
 const File = require("../models/File");
+const Comment = require('../models/comment');
 
 //get user Profile
 exports.getUserProfile = asyncHandler( async(req,res) => {
@@ -84,3 +85,39 @@ exports.UpdateProfile = asyncHandler(async(req,res) => {
         success: "Profile updated successfully",
     });
 });
+
+//Delete user account
+exports.deleteProfile = asyncHandler(async(req,res) => {
+    const user = await User.findById(req.user._id);
+    if(!user){
+        res.render("login", {
+            title: "Login",
+            user: req.user,
+            error: "User not found",
+        });
+    }
+    // delete the profile picture from cloudinary
+    if(user.profilePicture && user.profilePicture.public_id){
+        await Cloudinary.uploader.destroy(user.profilePicture.public_id);
+    }
+    //delete all the posts created by the user and their associated images and comments
+    const posts = await Post.find({author: req.user._id});
+    for(const post of posts){
+        for(const image of post.images){
+            await Cloudinary.uploader.destroy(image.public_id);
+        }
+        await Comment.deleteMany({post: post._id});
+        await Post.findByIdAndDelete(post._id);
+    }
+    //delete all the comments made by the user
+    await Comment.deleteMany({author: req.user._id});
+
+    //delete all files uploaded by the user
+    const files = await File.find({ uploaded_by: req.user._id});
+    for(const file of files){
+        await Cloudinary.uploader.destroy(file.public_id);
+    }
+    //delete the user
+    await User.findByIdAndDelete(req.user._id);
+    res.redirect("/login");
+})
